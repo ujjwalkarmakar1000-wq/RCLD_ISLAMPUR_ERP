@@ -1,5 +1,6 @@
 # RCLD Islampur ERP
 
+<<<<<<< HEAD
 A web-based ERP system only for RCLD Islampur, an education institute focused on computer-related courses.
 
 This project is intentionally not an LMS. It manages administrative, academic-operation, financial, employee and reporting workflows. Student-facing access is limited to ERP functions such as registration, admission, fees, attendance, results and certificates where required.
@@ -73,3 +74,44 @@ Dummy/demo data must be explicitly identifiable and removable without affecting 
 5. Open http://localhost:3000.
 
 Do not add TypeScript files or migrate this project to TypeScript.
+=======
+A unified digital platform for **RCLD Islampur** covering the public website/CMS, offline student ERP, CRM, admissions, courses and batches, fees and finance, employee HR/payroll, tasks, exams/certificates, online LMS, inventory and AI-assisted workflows.
+
+## Documentation
+
+The project requirements and architecture are maintained in **[docs/README.md](./docs/README.md)**.
+
+> The `/docs` directory is the project's permanent source of truth. Major business-rule, permission, architecture and integration changes must be documented there.
+
+## Initial User Types
+
+- **Superadmin** — complete system governance, roles, permissions and configuration.
+- **Employees / Teachers / Admin users** — may hold multiple Superadmin-configured roles.
+- **Offline Students** — admission, batch, attendance, fees, learning, exams and certificates.
+- **Online Students** — separate accounts for online course purchase and LMS access.
+
+## Initial Course Codes
+
+CCA, DCA, ADCA, CCC, CAO, DWPD, DOM, DCST, DCAP and DHNT.
+
+Course details are configurable and will be finalized later.
+
+## Planned Stack
+
+- Next.js App Router
+- JavaScript
+- Neon PostgreSQL
+- Prisma
+- Tailwind CSS
+- Object storage for images/documents
+- YouTube-hosted recorded lessons initially
+- PhonePe initially, with payment-provider abstraction for Razorpay
+- Groq API through an AI-provider abstraction
+- Vercel for testing; production hosting finalized later
+
+## Status
+
+**SDLC Phase: Requirements & System Design**
+
+Implementation should follow the approved documentation and phased roadmap in `/docs`.
+>>>>>>> 961d2a222d7d8d64e39c1381cf87d18a3666c664
