@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 node_modules/
 .next/
 out/
@@ -11,9 +10,3 @@ out/
 .DS_Store
 coverage/
 .vercel/
-=======
-node_modules
-
-# Next.js build/cache
-.next/
->>>>>>> 961d2a222d7d8d64e39c1381cf87d18a3666c664

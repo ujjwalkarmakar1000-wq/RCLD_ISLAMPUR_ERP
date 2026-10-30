@@ -1,0 +1,8 @@
+{
+  "name": "RCLD Islampur ERP",
+  "description": "Comprehensive ERP & LMS Portal for RCLD Islampur",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

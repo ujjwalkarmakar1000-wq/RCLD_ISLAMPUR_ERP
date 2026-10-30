@@ -1,12 +1,11 @@
 {
   "name": "rcld-islampur-erp",
-<<<<<<< HEAD
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3000 -H 0.0.0.0",
     "lint": "eslint .",
     "import:students": "node --env-file=.env scripts/import-students.mjs"
   },
@@ -26,46 +25,5 @@
     "@eslint/js": "^9.38.0",
     "eslint": "^9.38.0",
     "eslint-config-next": "^16.0.0"
-=======
-  "version": "0.2.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "prisma generate && next build",
-    "start": "next start",
-    "lint": "next lint",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:seed": "prisma db seed",
-    "db:seed:demo": "node prisma/seed.js",
-    "db:demo:clean": "node prisma/cleanup-demo.js",
-    "local:setup": "prisma generate && prisma db push && node prisma/seed.js",
-    "local:start": "npm run local:setup && next dev"
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.936.0",
-    "@aws-sdk/s3-request-presigner": "^3.936.0",
-    "@prisma/client": "^6.0.0",
-    "bcryptjs": "^3.0.0",
-    "jose": "^6.0.0",
-    "lucide-react": "^0.468.0",
-    "next": "^16.0.0",
-    "nodemailer": "^7.0.10",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "zod": "^3.24.0",
-    "@phonepe-pg/pg-sdk-node": "^2.0.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.14",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "prisma": "^6.0.0",
-    "tailwindcss": "^4.0.0"
->>>>>>> 961d2a222d7d8d64e39c1381cf87d18a3666c664
   }
 }

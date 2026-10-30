@@ -1,43 +1,3 @@
-<<<<<<< HEAD
-"use client";
-
-import { useEffect, useState } from "react";
-import { Users, UserPlus, FileText, RefreshCw, Search, GraduationCap } from "lucide-react";
-import ERPLayout from "@/components/ERPLayout";
-
-export default function DashboardPage() {
-  const [data, setData] = useState({ students: 0, registered: 0, recent: [] });
-  const [loading, setLoading] = useState(true);
-
-  async function load() {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/dashboard", { cache: "no-store" });
-      setData(await response.json());
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => { load(); }, []);
-
-  return (
-    <ERPLayout active="/dashboard" hideAssistant={false}>
-      <header className="topbar"><div><div className="crumb">RCLD Islampur / ERP</div><h1>Dashboard</h1></div><button className="icon-btn" onClick={load} title="Refresh" aria-label="Refresh"><RefreshCw size={18}/></button></header>
-      <div className="welcome"><div><span className="eyebrow">ERP CONTROL CENTER</span><h2>Student Management</h2><p>Manage RCLD registrations from one place.</p></div><a className="primary-btn" href="/dashboard/students/register"><UserPlus size={17}/> Register Student</a></div>
-      <div className="metric-grid">
-        <div className="metric"><div className="metric-icon blue"><Users size={21}/></div><span>Total Students</span><strong>{loading ? "—" : data.students}</strong><small>All registered records</small></div>
-        <div className="metric"><div className="metric-icon green"><GraduationCap size={21}/></div><span>Registered</span><strong>{loading ? "—" : data.registered}</strong><small>Current registration status</small></div>
-        <div className="metric"><div className="metric-icon orange"><FileText size={21}/></div><span>Records / Page</span><strong>50</strong><small>Maximum records per page</small></div>
-        <div className="metric"><div className="metric-icon purple"><Search size={21}/></div><span>Student Search</span><strong>Ready</strong><small>Multi-field and advanced filters</small></div>
-      </div>
-      <section className="panel"><div className="panel-head"><div><h3>Recently Registered</h3><p>Latest student registration records</p></div><a href="/dashboard/students">View all students →</a></div>
-        {data.recent.length === 0 ? <div className="empty">No student registrations found yet.</div> : <div className="table-wrap"><table><thead><tr><th>Form No.</th><th>Student</th><th>Course</th><th>Mobile</th><th>Status</th></tr></thead><tbody>{data.recent.map(s => <tr key={s._id}><td>{s.formNo}</td><td>{s.applicantName}</td><td>{s.courseName || "—"}</td><td>{s.mobileNumber}</td><td><span className="badge">{s.status}</span></td></tr>)}</tbody></table></div>}
-      </section>
-    </ERPLayout>
-  );
-}
-=======
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
@@ -193,4 +153,4 @@ function AnalyticsCard({title,subtitle,icon:Icon,children}){return <div classNam
 function Bar({label,value,max,money=false}){const width=Math.max(value>0?4:0,Math.min(100,Number(value||0)*100/Math.max(1,max)));const shown=money?"₹"+Number(value||0).toLocaleString("en-IN",{maximumFractionDigits:0}):Number(value||0).toLocaleString("en-IN");return <div><div className="mb-2 flex items-center justify-between gap-3"><span className="text-xs font-bold text-slate-600">{label}</span><span className="text-xs font-black text-slate-900">{shown}</span></div><div className="h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-blue-600" style={{width:width+"%"}}/></div></div>}
 
 function Flow({href,n,label}){return <Link href={href} className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"><span className="grid h-5 w-5 place-items-center rounded-full bg-white text-[9px] shadow-sm">{n}</span>{label}<CheckCircle2 size={12} className="text-slate-300 group-hover:text-blue-500"/></Link>}
->>>>>>> 961d2a222d7d8d64e39c1381cf87d18a3666c664
+
