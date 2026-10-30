@@ -1,0 +1,171 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { ArrowLeft, Save } from "lucide-react";
+import ERPLayout from "@/components/ERPLayout";
+
+const initial = {
+  formNo: "", aecCode: "", regnNo: "", courseName: "", courseCode: "", applicantName: "",
+  nationality: "", dateOfBirth: "", sex: "", fatherOrHusbandName: "", address: "",
+  pin: "", whatsappNumber: "", mobileNumber: "",
+  qualifications: [{ examCourse: "", boardUniversity: "", collegeInstitute: "", year: "", percentage: "" }],
+  enclosures: { stampPhoto: false, qualifyingCertificates: false, matricAdmitCard: false },
+  declarationDate: "", declarationPlace: "", signatureApplicant: ""
+};
+
+function Field({ label, name, value, onChange, required, type = "text", maxLength }) {
+  return (
+    <label className="form-field">
+      <span>{label}{required ? " *" : ""}</span>
+      <input
+        type={type}
+        value={value ?? ""}
+        onChange={(e) => onChange(name, e.target.value)}
+        required={required}
+        maxLength={maxLength}
+        autoComplete="off"
+      />
+    </label>
+  );
+}
+
+export default function RegisterStudentPage() {
+  const [form, setForm] = useState(initial);
+  const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+
+  useEffect(() => { fetch("/api/courses",{cache:"no-store"}).then(r=>r.json()).then(d=>setCourses(d.courses||[])).catch(()=>{}); }, []);
+
+  const selectCourse = (code) => { const c = courses.find(x=>x.code===code); setSelectedCourse(c||null); setForm(current=>({...current,courseCode:c?.code||"",courseName:c?.name||""})); };
+
+  const update = (key, value) => {
+    setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const updateQ = (key, value) => {
+    setForm((current) => ({
+      ...current,
+      qualifications: [{ ...current.qualifications[0], [key]: value }]
+    }));
+  };
+
+  async function submit(e) {
+    e.preventDefault();
+    if (saving) return;
+
+    setSaving(true);
+    setMessage("");
+
+    try {
+      const payload = {
+        ...form,
+        formNo: form.formNo.trim(),
+        applicantName: form.applicantName.trim(),
+        mobileNumber: form.mobileNumber.trim(),
+        address: form.address.trim()
+      };
+
+      const r = await fetch("/api/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || "Unable to register.");
+
+      setMessage("Student registered successfully.");
+      setForm(initial);
+    } catch (error) {
+      setMessage(error.message || "Unable to connect to the local ERP server.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <ERPLayout active="/dashboard/students/register">
+      <header className="topbar">
+        <div>
+          <div className="crumb">Students / Registration</div>
+          <h1>RCLD Registration Form</h1>
+        </div>
+        <a className="ghost-btn" href="/dashboard/students"><ArrowLeft size={17} /> Back to Students</a>
+      </header>
+
+      <form className="registration-form" onSubmit={submit}>
+        <div className="form-intro">
+          <div className="rcld-title">RASHTRIYA COMPUTER LITERACY DRIVE</div>
+          <strong>Registration Form</strong>
+          <span>All information to be filled in CAPITAL LETTERS only using Blue/Black Roller pen.</span>
+        </div>
+
+        <section className="form-section">
+          <h3>Office / Registration Details</h3>
+          <div className="form-grid four">
+            <Field label="Form No." name="formNo" value={form.formNo} onChange={update} required />
+            <Field label="AEC Code" name="aecCode" value={form.aecCode} onChange={update} />
+            <Field label="Regn. No." name="regnNo" value={form.regnNo} onChange={update} />
+            <label className="form-field"><span>Course *</span><select value={form.courseCode} onChange={e=>selectCourse(e.target.value)} required><option value="">Select course</option>{courses.map(c=><option key={c._id} value={c.code}>{c.code} — {c.name}</option>)}</select></label>
+            <Field label="Course Name" name="courseName" value={form.courseName} onChange={update} />
+            <Field label="Course Code" name="courseCode" value={form.courseCode} onChange={update} />
+          </div>
+          {selectedCourse && <div className="course-fee-summary"><div><span>Course Fee</span><strong>₹{Number(selectedCourse.fee||0).toLocaleString("en-IN")}</strong></div><div><span>Admission Fee</span><strong>₹{Number(selectedCourse.admissionFee||0).toLocaleString("en-IN")}</strong></div><div><span>Initial Payable</span><strong>₹{(Number(selectedCourse.fee||0)+Number(selectedCourse.admissionFee||0)).toLocaleString("en-IN")}</strong></div></div>}
+        </section>
+
+        <section className="form-section">
+          <h3>Applicant Details</h3>
+          <div className="form-grid three">
+            <Field label="Complete Name of the Applicant" name="applicantName" value={form.applicantName} onChange={update} required />
+            <Field label="Nationality" name="nationality" value={form.nationality} onChange={update} />
+            <Field label="Date of Birth" name="dateOfBirth" type="date" value={form.dateOfBirth} onChange={update} />
+            <label className="form-field"><span>Sex</span><select value={form.sex} onChange={(e) => update("sex", e.target.value)}><option value="">Select</option><option value="M">M - Male</option><option value="F">F - Female</option></select></label>
+            <Field label="Father / Husband Name" name="fatherOrHusbandName" value={form.fatherOrHusbandName} onChange={update} />
+            <Field label="PIN" name="pin" value={form.pin} onChange={update} maxLength={10} />
+            <Field label="WhatsApp Number" name="whatsappNumber" value={form.whatsappNumber} onChange={update} maxLength={15} />
+            <Field label="Mobile Number" name="mobileNumber" value={form.mobileNumber} onChange={update} required maxLength={15} />
+          </div>
+          <label className="form-field full"><span>Complete Address</span><textarea value={form.address} onChange={(e) => update("address", e.target.value)} rows="3" /></label>
+        </section>
+
+        <section className="form-section">
+          <h3>Details of Maximum Qualification</h3>
+          <div className="qualification-grid">
+            <input placeholder="Exam / Course" value={form.qualifications[0].examCourse} onChange={(e) => updateQ("examCourse", e.target.value)} />
+            <input placeholder="Board / University" value={form.qualifications[0].boardUniversity} onChange={(e) => updateQ("boardUniversity", e.target.value)} />
+            <input placeholder="College / Institute" value={form.qualifications[0].collegeInstitute} onChange={(e) => updateQ("collegeInstitute", e.target.value)} />
+            <input placeholder="Year" value={form.qualifications[0].year} onChange={(e) => updateQ("year", e.target.value)} />
+            <input placeholder="% of Marks" value={form.qualifications[0].percentage} onChange={(e) => updateQ("percentage", e.target.value)} />
+          </div>
+        </section>
+
+        <section className="form-section">
+          <h3>Enclosures</h3>
+          <div className="checks">
+            {[["stampPhoto", "One Stamp Size Photo"], ["qualifyingCertificates", "Xerox copy of qualifying certificates"], ["matricAdmitCard", "Matric Admit Card"]].map(([key, label]) => (
+              <label key={key}><input type="checkbox" checked={form.enclosures[key]} onChange={(e) => setForm((current) => ({ ...current, enclosures: { ...current.enclosures, [key]: e.target.checked } }))} />{label}</label>
+            ))}
+          </div>
+        </section>
+
+        <section className="form-section">
+          <h3>Declaration</h3>
+          <p className="declaration">I do hereby declare that all the informations stated in this application form are true to the best of my knowledge. I have followed the prospectus carefully and understood all the rules and regulations agree to abide by them.</p>
+          <div className="form-grid three">
+            <Field label="Date" name="declarationDate" type="date" value={form.declarationDate} onChange={update} />
+            <Field label="Place" name="declarationPlace" value={form.declarationPlace} onChange={update} />
+            <Field label="Signature of Applicant" name="signatureApplicant" value={form.signatureApplicant} onChange={update} />
+          </div>
+        </section>
+
+        {message && <div className={message.includes("successfully") ? "success-msg" : "error-msg"}>{message}</div>}
+        <div className="form-actions">
+          <a className="ghost-btn" href="/dashboard/students">Cancel</a>
+          <button className="primary-btn" disabled={saving}><Save size={17} />{saving ? "Saving…" : "Register Student"}</button>
+        </div>
+      </form>
+    </ERPLayout>
+  );
+}
